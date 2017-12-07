@@ -3,11 +3,15 @@ package mateusz.grabarski.andanim1.views;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Animatable;
+import android.graphics.drawable.ColorDrawable;
 import android.hardware.input.InputManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -32,8 +36,6 @@ import mateusz.grabarski.andanim1.R;
 import mateusz.grabarski.andanim1.models.DashboardItem;
 
 public class DetailsActivity extends AppCompatActivity {
-
-    private static final String TAG = "DetailsActivity";
 
     public static final String DASHBOARD_ITEM = "ITEM";
 
@@ -61,6 +63,9 @@ public class DetailsActivity extends AppCompatActivity {
     @BindView(R.id.content_details_comments_list)
     ListView list;
 
+    @BindView(R.id.content_details_root_ll)
+    LinearLayout rootLl;
+
     private DashboardItem mItem;
     private InputMethodManager mInputManager;
     private boolean isEditTextVisible = false;
@@ -84,10 +89,22 @@ public class DetailsActivity extends AppCompatActivity {
         if (getIntent().getExtras() != null) {
             mItem = (DashboardItem) getIntent().getExtras().getSerializable(DASHBOARD_ITEM);
 
-            Log.d(TAG, "onCreate: " + mItem);
-
             loadData();
+            getPhoto();
         }
+    }
+
+    private void getPhoto() {
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), mItem.getPicture());
+        colorize(bitmap);
+    }
+
+    private void colorize(Bitmap bitmap) {
+        Palette palette = Palette.from(bitmap).generate();
+        rootLl.setBackgroundColor(palette.getDarkMutedColor(0));
+        titleTv.setBackgroundColor(palette.getMutedColor(0));
+        revealView.setBackgroundColor(palette.getLightMutedColor(0));
+
     }
 
     private void setUpAdapter() {
@@ -127,6 +144,7 @@ public class DetailsActivity extends AppCompatActivity {
     private void addComment() {
         comments.add(commentEt.getText().toString().trim());
         commentsAdapter.notifyDataSetChanged();
+        commentEt.setText("");
     }
 
     private void revealEditText() {
