@@ -1,5 +1,6 @@
 package mateusz.grabarski.andanim1.views;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -86,6 +87,8 @@ public class DashboardActivity extends AppCompatActivity implements DashboardAda
 
     @Override
     public void onItemClick(DashboardItem item) {
-
+        Intent intent = new Intent(this, DetailsActivity.class);
+        intent.putExtra(DetailsActivity.DASHBOARD_ITEM, item);
+        startActivity(intent);
     }
 }

@@ -1,10 +1,12 @@
 package mateusz.grabarski.andanim1.models;
 
+import java.io.Serializable;
+
 /**
  * Created by MGrabarski on 06.12.2017.
  */
 
-public class DashboardItem {
+public class DashboardItem implements Serializable {
 
     private String title;
     private String description;
@@ -38,5 +40,14 @@ public class DashboardItem {
 
     public void setPicture(int picture) {
         this.picture = picture;
+    }
+
+    @Override
+    public String toString() {
+        return "DashboardItem{" +
+                "title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", picture=" + picture +
+                '}';
     }
 }
