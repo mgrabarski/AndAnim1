@@ -1,7 +1,9 @@
 package mateusz.grabarski.andanim1.views;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
+import android.graphics.drawable.Animatable;
 import android.hardware.input.InputManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -94,8 +96,13 @@ public class DetailsActivity extends AppCompatActivity {
 
     @OnClick(R.id.content_details_comment_fab)
     public void onAddCommentClick() {
-        if (!isEditTextVisible)
+        if (!isEditTextVisible) {
             revealEditText();
+            commentAddFab.setImageResource(R.drawable.ic_done);
+        } else {
+            hideEditText();
+            commentAddFab.setImageResource(R.drawable.ic_add);
+        }
     }
 
     private void revealEditText() {
@@ -107,6 +114,24 @@ public class DetailsActivity extends AppCompatActivity {
         Animator anim = ViewAnimationUtils.createCircularReveal(revealView, cx, cy, 0f, finalRadius);
         revealView.setVisibility(View.VISIBLE);
         isEditTextVisible = true;
+        anim.start();
+    }
+
+    private void hideEditText() {
+        int cx = revealView.getRight() - 30;
+        int cy = revealView.getBottom() - 60;
+
+        int initialRadius = revealView.getWidth();
+
+        Animator anim = ViewAnimationUtils.createCircularReveal(revealView, cx, cy, initialRadius, 0f);
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                revealView.setVisibility(View.INVISIBLE);
+            }
+        });
+        isEditTextVisible = false;
         anim.start();
     }
 }
