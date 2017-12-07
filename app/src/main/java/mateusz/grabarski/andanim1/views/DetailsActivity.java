@@ -1,5 +1,6 @@
 package mateusz.grabarski.andanim1.views;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.hardware.input.InputManager;
 import android.os.Bundle;
@@ -7,6 +8,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -18,6 +21,7 @@ import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import mateusz.grabarski.andanim1.R;
 import mateusz.grabarski.andanim1.models.DashboardItem;
 
@@ -46,13 +50,15 @@ public class DetailsActivity extends AppCompatActivity {
     LinearLayout contentDetailsCourseNameHolder;
 
     @BindView(R.id.content_details_comment_fab)
-    FloatingActionButton contentDetailsCommentFab;
+    FloatingActionButton commentAddFab;
 
     @BindView(R.id.content_details_comments_list)
-    ListView contentDetailsCommentsList;
+    ListView list;
 
     private DashboardItem mItem;
     private InputMethodManager mInputManager;
+    private boolean isEditTextVisible = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +67,8 @@ public class DetailsActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
+
+        initUI();
 
         mInputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -73,9 +81,32 @@ public class DetailsActivity extends AppCompatActivity {
         }
     }
 
+    private void initUI() {
+        revealView.setVisibility(View.INVISIBLE);
+        isEditTextVisible = false;
+    }
+
     private void loadData() {
         Picasso.with(this).load(mItem.getPicture()).into(image);
 
         titleTv.setText(mItem.getTitle());
+    }
+
+    @OnClick(R.id.content_details_comment_fab)
+    public void onAddCommentClick() {
+        if (!isEditTextVisible)
+            revealEditText();
+    }
+
+    private void revealEditText() {
+        int cx = revealView.getRight() - 30;
+        int cy = revealView.getBottom() - 60;
+
+        int finalRadius = Math.max(revealView.getWidth(), revealView.getHeight());
+
+        Animator anim = ViewAnimationUtils.createCircularReveal(revealView, cx, cy, 0f, finalRadius);
+        revealView.setVisibility(View.VISIBLE);
+        isEditTextVisible = true;
+        anim.start();
     }
 }
