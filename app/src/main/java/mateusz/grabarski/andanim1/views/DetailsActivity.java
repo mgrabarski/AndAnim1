@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,6 +21,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -60,7 +64,8 @@ public class DetailsActivity extends AppCompatActivity {
     private DashboardItem mItem;
     private InputMethodManager mInputManager;
     private boolean isEditTextVisible = false;
-
+    private List<String> comments;
+    private ArrayAdapter<String> commentsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +74,8 @@ public class DetailsActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
+
+        setUpAdapter();
 
         initUI();
 
@@ -81,6 +88,12 @@ public class DetailsActivity extends AppCompatActivity {
 
             loadData();
         }
+    }
+
+    private void setUpAdapter() {
+        comments = new ArrayList<>();
+        commentsAdapter = new ArrayAdapter<String>(this, R.layout.item_comment, comments);
+        list.setAdapter(commentsAdapter);
     }
 
     private void initUI() {
@@ -99,10 +112,21 @@ public class DetailsActivity extends AppCompatActivity {
         if (!isEditTextVisible) {
             revealEditText();
             commentAddFab.setImageResource(R.drawable.ic_done);
+
+            commentEt.requestFocus();
+            mInputManager.showSoftInput(commentEt, InputMethodManager.SHOW_IMPLICIT);
         } else {
             hideEditText();
             commentAddFab.setImageResource(R.drawable.ic_add);
+            mInputManager.hideSoftInputFromWindow(commentEt.getWindowToken(), 0);
+
+            addComment();
         }
+    }
+
+    private void addComment() {
+        comments.add(commentEt.getText().toString().trim());
+        commentsAdapter.notifyDataSetChanged();
     }
 
     private void revealEditText() {
