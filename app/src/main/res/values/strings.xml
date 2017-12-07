@@ -6,4 +6,8 @@
     <string name="create_account">Create account</string>
     <string name="first_name">First name</string>
     <string name="last_name">Last name</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="toggle">Toggle</string>
+    <string name="show_as_grid">Show as grid</string>
+    <string name="show_as_list">Show as list</string>
 </resources>
