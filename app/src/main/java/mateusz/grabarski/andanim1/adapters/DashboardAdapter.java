@@ -1,5 +1,10 @@
 package mateusz.grabarski.andanim1.adapters;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -66,13 +71,25 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
         }
 
         public void populate(final DashboardItem item, final OnItemClickListener listener) {
-             titleTv.setText(item.getTitle());
-            Picasso.with(imageIv.getContext()).load(item.getPicture()).into(imageIv);
+
+            final Context context = imageIv.getContext();
+
+            titleTv.setText(item.getTitle());
+            Picasso.with(context).load(item.getPicture()).into(imageIv);
 
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     listener.onItemClick(item);
+                }
+            });
+
+            Bitmap photo = BitmapFactory.decodeResource(context.getResources(), item.getPicture());
+            Palette.from(photo).generate(new Palette.PaletteAsyncListener() {
+                @Override
+                public void onGenerated(Palette palette) {
+                    int textBgColor = palette.getMutedColor(ContextCompat.getColor(context, android.R.color.white));
+                    titleTv.setBackgroundColor(textBgColor);
                 }
             });
         }
